@@ -42,92 +42,112 @@ export default function LoginPage() {
     <main className="login-page">
       <section className="login-layout">
         <aside className="login-showcase">
-          <div className="showcase-head">
-            <div className="brand">
-              <div className="brand-icon">O</div>
-              <div>
-                <p className="brand-kicker">Orbit Platform</p>
-                <h1>Orbit Desk</h1>
+          <div className="login-showcase-shell">
+            <div className="showcase-head">
+              <div className="brand">
+                <div className="brand-icon">O</div>
+                <div>
+                  <p className="brand-kicker">Orbit Platform</p>
+                  <h1>Orbit Desk</h1>
+                </div>
               </div>
+              <Link href="/dashboard" className="inline-link">
+                Ir para dashboard
+              </Link>
             </div>
-            <Link href="/dashboard" className="inline-link">
-              Ir para dashboard
-            </Link>
-          </div>
 
-          <div className="showcase-body">
-            <p className="section-kicker">Acesso operacional</p>
-            <h2>Entre na central que organiza SLA, IA e atendimento em uma so orbita.</h2>
-            <p className="showcase-copy">
-              Agora os dados vivem em banco real com Prisma, sessao por cookie e persistencia no servidor.
-            </p>
-          </div>
+            <div className="showcase-body">
+              <p className="section-kicker">Acesso operacional</p>
+              <h2>Entre na central que organiza SLA, IA e atendimento em uma so orbita.</h2>
+              <p className="showcase-copy">
+                O Orbit Desk agora opera com sessao real, persistencia no servidor e base pronta
+                para escalar atendimento, automacoes e inteligencia.
+              </p>
+            </div>
 
-          <div className="showcase-panels">
-            <article className="mini-panel">
-              <span>Demo</span>
-              <p>Use rafa@orbitdesk.dev para entrar como administrador.</p>
-            </article>
-            <article className="mini-panel">
-              <span>Senha</span>
-              <p>A senha padrao para os usuarios demo e orbit123.</p>
-            </article>
-            <article className="mini-panel">
-              <span>DB</span>
-              <p>Chamados, mensagens e sessoes agora saem do banco.</p>
-            </article>
+            <div className="showcase-panels">
+              <article className="mini-panel">
+                <span>Demo</span>
+                <p>Entre como administrador com rafa@orbitdesk.dev.</p>
+              </article>
+              <article className="mini-panel">
+                <span>Senha</span>
+                <p>A senha padrao dos usuarios seed e orbit123.</p>
+              </article>
+              <article className="mini-panel">
+                <span>Stack</span>
+                <p>Next.js, Prisma e PostgreSQL sustentando o MVP.</p>
+              </article>
+            </div>
+
+            <div className="showcase-metrics">
+              <article className="showcase-metric">
+                <strong>24h</strong>
+                <span>monitoramento de fila</span>
+              </article>
+              <article className="showcase-metric">
+                <strong>IA</strong>
+                <span>apoio para triagem e resposta</span>
+              </article>
+              <article className="showcase-metric">
+                <strong>DB</strong>
+                <span>dados persistidos no servidor</span>
+              </article>
+            </div>
           </div>
         </aside>
 
         <section className="login-card">
-          <div className="login-card-head">
-            <p className="section-kicker">Login</p>
-            <h3>Entrar na operacao</h3>
-            <p>Use um dos usuarios seed do banco para acessar o sistema.</p>
-          </div>
+          <div className="login-card-shell">
+            <div className="login-card-head">
+              <p className="section-kicker">Login</p>
+              <h3>Entrar na operacao</h3>
+              <p>Use um dos usuarios seed do banco para acessar o sistema.</p>
+            </div>
 
-          <form className="login-form" onSubmit={handleSubmit}>
-            <label className="field">
-              <span>E-mail</span>
-              <input
-                name="email"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="voce@empresa.com"
-                autoComplete="email"
-              />
-            </label>
+            <form className="login-form" onSubmit={handleSubmit}>
+              <label className="field">
+                <span>E-mail</span>
+                <input
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="voce@empresa.com"
+                  autoComplete="email"
+                />
+              </label>
 
-            <label className="field">
-              <span>Senha</span>
-              <input
-                name="password"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Digite sua senha"
-                autoComplete="current-password"
-              />
-            </label>
+              <label className="field">
+                <span>Senha</span>
+                <input
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="Digite sua senha"
+                  autoComplete="current-password"
+                />
+              </label>
 
-            {error ? <p className="form-error">{error}</p> : null}
+              {error ? <p className="form-error">{error}</p> : null}
 
-            <button className="primary-button block" disabled={loading} type="submit">
-              {loading ? "Entrando..." : "Entrar no Orbit Desk"}
-            </button>
-          </form>
+              <button className="primary-button block login-submit" disabled={loading} type="submit">
+                {loading ? "Entrando..." : "Entrar no Orbit Desk"}
+              </button>
+            </form>
 
-          <div className="login-divider">
-            <span />
-            <p>usuarios demo adicionais</p>
-            <span />
-          </div>
-
-          <div className="demo-users">
-            <p>Amanda: amanda@orbitdesk.dev</p>
-            <p>Joao: joao@orbitdesk.dev</p>
-            <p>Senha: orbit123</p>
+            <div className="login-helper-card">
+              <div className="login-helper-head">
+                <strong>Usuarios demo adicionais</strong>
+                <span>mesma senha padrao</span>
+              </div>
+              <div className="demo-users">
+                <p><strong>Amanda</strong> amanda@orbitdesk.dev</p>
+                <p><strong>Joao</strong> joao@orbitdesk.dev</p>
+                <p><strong>Senha</strong> orbit123</p>
+              </div>
+            </div>
           </div>
         </section>
       </section>

@@ -62,6 +62,19 @@ export type DashboardPayload = {
   teamMembers: CurrentUser[];
 };
 
+export type SettingsPayload = {
+  currentUser: CurrentUser;
+  company: CompanyView;
+  categories: CategoryView[];
+  teamMembers: CurrentUser[];
+  stats: {
+    openTickets: number;
+    totalTickets: number;
+    totalCategories: number;
+    totalTeamMembers: number;
+  };
+};
+
 export const statusOptions: Array<{ value: TicketStatus; label: string }> = [
   { value: "ABERTO", label: "Aberto" },
   { value: "EM_TRIAGEM", label: "Em triagem" },

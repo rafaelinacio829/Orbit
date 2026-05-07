@@ -1,5 +1,8 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { AppShell } from "./app-shell";
+import { CollapsiblePanel } from "./collapsible-panel";
+import { TeamCapacityCard } from "./team-capacity-card";
 import {
   formatRelativeTicketTime,
   getInitials,
@@ -48,7 +51,8 @@ export function DashboardScreen({ data }: DashboardScreenProps) {
     ).length;
     const rate = owned ? `${Math.round((resolved / owned) * 100)}%` : "0%";
     const width = owned ? `${Math.max(8, Math.round((resolved / owned) * 100))}%` : "8%";
-    const tone = member.role === "ADMIN" ? "blue" : member.role === "SUPERVISOR" ? "purple" : "teal";
+    const tone: "blue" | "purple" | "teal" =
+      member.role === "ADMIN" ? "blue" : member.role === "SUPERVISOR" ? "purple" : "teal";
 
     return { label: member.name.split(" ")[0], rate, width, tone };
   });
@@ -59,7 +63,7 @@ export function DashboardScreen({ data }: DashboardScreenProps) {
   return (
     <AppShell
       currentUser={data.currentUser}
-      title="Central operacional de suporte"
+      title=""
       subtitle="Visao geral"
       tickets={data.tickets}
       actions={
@@ -73,140 +77,179 @@ export function DashboardScreen({ data }: DashboardScreenProps) {
         </>
       }
     >
-      <div className="metrics-grid">
-        <article className="metric-card blue">
-          <span>Abertos</span>
-          <strong>{openTickets.length}</strong>
-          <small>Fila ativa na operacao</small>
+      <div className="metrics-grid orbit-kpis">
+        <article className="metric-card blue orbit-kpi-card">
+          <div className="metric-topline">
+            <span className="metric-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 3.8h6.3L19 8.5v9.7a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5.8a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.7" />
+                <path d="M14 4v4.8h4.8M9 12h6M9 15.5h4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
+              </svg>
+            </span>
+            <span>Abertos</span>
+          </div>
+          <div className="metric-body">
+            <div className="metric-orbit">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle className="metric-ring-base" cx="60" cy="60" r="48" />
+                <circle className="metric-ring-value" cx="60" cy="60" r="48" style={{ strokeDashoffset: 302 - Math.min(100, openTickets.length * 22) * 3.02 }} />
+              </svg>
+            </div>
+            <div className="metric-value-block">
+              <strong>{openTickets.length}</strong>
+              <small className="metric-chip metric-chip-up">+8 hoje</small>
+            </div>
+          </div>
         </article>
-        <article className="metric-card purple">
-          <span>Em atendimento</span>
-          <strong>{inProgressTickets.length}</strong>
-          <small>Chamados sendo tratados agora</small>
+        <article className="metric-card purple orbit-kpi-card">
+          <div className="metric-topline">
+            <span className="metric-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12a7 7 0 0 1 14 0v3.2a3.2 3.2 0 0 1-3.2 3.2H13" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
+                <path d="M4.5 12.4h3v4.8h-3a1 1 0 0 1-1-1v-2.8a1 1 0 0 1 1-1ZM19.5 12.4h-3v4.8h3a1 1 0 0 0 1-1v-2.8a1 1 0 0 0-1-1ZM12.5 18.4a1.4 1.4 0 0 1-2.8 0 1.4 1.4 0 0 1 2.8 0Z" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.7" />
+              </svg>
+            </span>
+            <span>Em atendimento</span>
+          </div>
+          <div className="metric-body">
+            <div className="metric-orbit">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle className="metric-ring-base" cx="60" cy="60" r="48" />
+                <circle className="metric-ring-value" cx="60" cy="60" r="48" style={{ strokeDashoffset: 302 - Math.min(100, inProgressTickets.length * 28) * 3.02 }} />
+              </svg>
+            </div>
+            <div className="metric-value-block">
+              <strong>{inProgressTickets.length}</strong>
+              <small className="metric-chip">+3 equipe</small>
+            </div>
+          </div>
         </article>
-        <article className="metric-card amber">
-          <span>SLA em risco</span>
-          <strong>{riskTickets.length}</strong>
-          <small>Criticos ou urgentes</small>
+        <article className="metric-card amber orbit-kpi-card">
+          <div className="metric-topline">
+            <span className="metric-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 6.2v6.1l3.7 2.2" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
+                <path d="M20 12a8 8 0 1 1-2.35-5.65" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
+                <path d="M17.6 4.8h2.7v2.7" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
+              </svg>
+            </span>
+            <span>SLA em risco</span>
+          </div>
+          <div className="metric-body">
+            <div className="metric-orbit">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle className="metric-ring-base" cx="60" cy="60" r="48" />
+                <circle className="metric-ring-value" cx="60" cy="60" r="48" style={{ strokeDashoffset: 302 - Math.min(100, riskTickets.length * 42) * 3.02 }} />
+              </svg>
+            </div>
+            <div className="metric-value-block">
+              <strong>{riskTickets.length}</strong>
+              <small className="metric-chip metric-chip-warn">atencao</small>
+            </div>
+          </div>
         </article>
-        <article className="metric-card green">
-          <span>Resolvidos</span>
-          <strong>{resolvedTickets.length}</strong>
-          <small>Ja concluídos no banco</small>
+        <article className="metric-card green orbit-kpi-card">
+          <div className="metric-topline">
+            <span className="metric-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 7 10.2 16.8 5 11.6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                <path d="M4.8 5.4A9 9 0 1 1 3 12" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" />
+              </svg>
+            </span>
+            <span>Resolvidos</span>
+          </div>
+          <div className="metric-body">
+            <div className="metric-orbit">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <circle className="metric-ring-base" cx="60" cy="60" r="48" />
+                <circle className="metric-ring-value" cx="60" cy="60" r="48" style={{ strokeDashoffset: 302 - Math.min(100, resolvedTickets.length * 36) * 3.02 }} />
+              </svg>
+            </div>
+            <div className="metric-value-block">
+              <strong>{resolvedTickets.length}</strong>
+              <small className="metric-chip metric-chip-up">+94%</small>
+            </div>
+          </div>
         </article>
       </div>
 
-      <div className="ai-strip">
+      <div className="ai-strip orbit-ai-panel">
         <div className="ai-badge">ORBIT AI</div>
         <p>
           <strong>Leitura da fila:</strong> {riskTickets.length} chamado(s) critico(s) e maior
           volume atual em <strong>{topCategory?.name ?? "Acesso"}</strong>. A melhor acao agora e
           atacar autenticacao e integrações antes do restante da fila.
         </p>
+        <div className="ai-actions">
+          <button className="ghost-button" type="button">
+            Revisar prioridades
+          </button>
+          <button className="ghost-button" type="button">
+            Gerar resumo
+          </button>
+        </div>
       </div>
 
-      <div className="dashboard-grid">
-        <section className="panel panel-wide">
-          <div className="panel-header">
-            <div>
-              <p className="section-kicker">Fila ao vivo</p>
-              <h3>Chamados mais recentes</h3>
-            </div>
-            <Link className="ghost-button" href="/tickets">
-              Abrir modulo
-            </Link>
+      <div className="dashboard-split-grid">
+        <CollapsiblePanel kicker="Fila ao vivo" title="Chamados mais recentes" className="queue-collapsible-card">
+          <div className="queue-head">
+            <span />
+            <span>Titulo</span>
+            <span>Status</span>
+            <span>SLA</span>
+            <span>Idade</span>
+            <span>Owner</span>
           </div>
 
-          <div className="ticket-list">
+          <div className="ticket-list orbit-queue-list">
             {highlightedTickets.map((ticket, index) => (
-              <article key={ticket.id} className={`ticket-row ${index === 0 ? "selected" : ""}`}>
+              <article
+                key={ticket.id}
+                className={`ticket-row orbit-queue-row ${index === 0 ? "selected" : ""}`}
+                style={{ "--delay": `${index * 90}ms` } as CSSProperties}
+              >
                 <span className={`priority-dot ${toneByPriority[ticket.priority]}`} />
-                <div>
+                <div className="queue-title">
                   <h4>{ticket.title}</h4>
-                  <p>
+                  <p className="queue-meta">
                     {ticket.number} • {ticket.companyName} • {priorityLabel(ticket.priority)}
                   </p>
                 </div>
                 <span className={`status-pill ${toneByStatus[ticket.status]}`}>
                   {ticket.status.replaceAll("_", " ")}
                 </span>
-                <span className="ticket-time">{formatRelativeTicketTime(ticket.updatedAt)}</span>
+                <div className="sla-cell">
+                  <div className="sla-bar">
+                    <i className={riskTickets.length > 0 && ticket.priority === "CRITICA" ? "bad" : "ok"} style={{ width: ticket.priority === "CRITICA" ? "88%" : "54%" }} />
+                  </div>
+                  <span className="ticket-time">{ticket.priority === "CRITICA" ? "risco alto" : "estavel"}</span>
+                </div>
+                <span className="ticket-time queue-age">{formatRelativeTicketTime(ticket.updatedAt)}</span>
                 <span className="avatar-sm">
                   {getInitials(ticket.assignedToName ?? ticket.requesterName)}
                 </span>
               </article>
             ))}
           </div>
-        </section>
+        </CollapsiblePanel>
 
-        <section className="panel">
-          <div className="panel-header">
-            <div>
-              <p className="section-kicker">Categorias</p>
-              <h3>Volume por tema</h3>
-            </div>
-          </div>
+        <div className="dashboard-side-stack">
+          <TeamCapacityCard agents={agentCount} />
 
-          <div className="bars">
-            {categoryCount.map((item) => (
-              <div key={item.id} className="bar-row">
-                <span>{item.name}</span>
-                <div className="bar-track">
-                  <div className="bar-fill blue" style={{ width: item.width }} />
+          <CollapsiblePanel kicker="Categorias" title="Distribuicao da fila">
+            <div className="category-list">
+              {categoryCount.map((item, index) => (
+                <div key={item.id} className="category-row" style={{ "--delay": `${index * 90}ms` } as CSSProperties}>
+                  <span>{item.name}</span>
+                  <div className="category-bar">
+                    <i style={{ width: item.width }} />
+                  </div>
+                  <strong>{item.total}</strong>
                 </div>
-                <strong>{item.total}</strong>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="panel">
-          <div className="panel-header">
-            <div>
-              <p className="section-kicker">Atendentes</p>
-              <h3>Resolucao por responsavel</h3>
+              ))}
             </div>
-          </div>
-
-          <div className="bars">
-            {agentCount.map((item) => (
-              <div key={item.label} className="bar-row">
-                <span>{item.label}</span>
-                <div className="bar-track">
-                  <div className={`bar-fill ${item.tone}`} style={{ width: item.width }} />
-                </div>
-                <strong>{item.rate}</strong>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="panel panel-wide">
-          <div className="panel-header">
-            <div>
-              <p className="section-kicker">Resumo operacional</p>
-              <h3>O que agora depende do banco</h3>
-            </div>
-          </div>
-
-          <div className="action-grid">
-            <article className="action-card">
-              <span>01</span>
-              <h4>Login por sessao</h4>
-              <p>Autenticacao salva em cookie e sessao registrada no banco.</p>
-            </article>
-            <article className="action-card">
-              <span>02</span>
-              <h4>Chamados persistidos</h4>
-              <p>Crie, atualize e converse em tickets gravados em banco SQLite via Prisma.</p>
-            </article>
-            <article className="action-card">
-              <span>03</span>
-              <h4>Dashboard de verdade</h4>
-              <p>Indicadores e fila puxados do servidor a cada refresh da aplicacao.</p>
-            </article>
-          </div>
-        </section>
+          </CollapsiblePanel>
+        </div>
       </div>
     </AppShell>
   );

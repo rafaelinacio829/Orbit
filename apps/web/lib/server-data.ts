@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import type { DashboardPayload, TicketView } from "./orbit-data";
+import type { DashboardPayload, SettingsPayload, TicketView } from "./orbit-data";
 
 const mapTicket = (ticket: Awaited<ReturnType<typeof fetchTicketsRaw>>[number]): TicketView => ({
   id: ticket.id,
@@ -89,5 +89,93 @@ export async function getDashboardPayload(userId: string): Promise<DashboardPayl
       email: member.email,
       role: member.role
     }))
+  };
+}
+
+export async function getSettingsPayload(userId: string): Promise<SettingsPayload> {
+  const [user, categories, teamMembers, totalTickets] = await Promise.all([
+    prisma.user.findUniqueOrThrow({
+      where: { id: userId },
+      include: {
+        company: true
+      }
+    }),
+    prisma.category.findMany({
+      where: {
+        company: {
+          users: {
+            some: {
+              id: userId
+            }
+          }
+        }
+      },
+      orderBy: { name: "asc" }
+    }),
+    prisma.user.findMany({
+      where: {
+        company: {
+          users: {
+            some: {
+              id: userId
+            }
+          }
+        },
+        role: {
+          in: ["ADMIN", "SUPERVISOR", "AGENT"]
+        }
+      },
+      orderBy: { name: "asc" }
+    }),
+    prisma.ticket.count({
+      where: {
+        company: {
+          users: {
+            some: {
+              id: userId
+            }
+          }
+        }
+      }
+    })
+  ]);
+
+  const openTickets = await prisma.ticket.count({
+    where: {
+      companyId: user.companyId,
+      status: {
+        in: ["ABERTO", "EM_TRIAGEM", "EM_ATENDIMENTO", "AGUARDANDO_CLIENTE"]
+      }
+    }
+  });
+
+  return {
+    currentUser: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    },
+    company: {
+      id: user.company.id,
+      name: user.company.name,
+      plan: user.company.plan ?? "Plano"
+    },
+    categories: categories.map((category) => ({
+      id: category.id,
+      name: category.name
+    })),
+    teamMembers: teamMembers.map((member) => ({
+      id: member.id,
+      name: member.name,
+      email: member.email,
+      role: member.role
+    })),
+    stats: {
+      openTickets,
+      totalTickets,
+      totalCategories: categories.length,
+      totalTeamMembers: teamMembers.length
+    }
   };
 }
