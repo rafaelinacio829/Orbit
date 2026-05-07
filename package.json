@@ -1,0 +1,25 @@
+{
+  "name": "orbit-desk",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace @orbit/web run dev",
+    "dev:api": "npm --workspace @orbit/api run dev",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.7.0",
+    "typescript": "^5.8.3"
+  }
+}

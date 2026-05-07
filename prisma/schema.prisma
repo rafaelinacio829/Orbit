@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  SUPERVISOR
+  AGENT
+  REQUESTER
+}
+
+enum TicketStatus {
+  ABERTO
+  EM_TRIAGEM
+  EM_ATENDIMENTO
+  AGUARDANDO_CLIENTE
+  RESOLVIDO
+  FECHADO
+}
+
+enum TicketPriority {
+  BAIXA
+  MEDIA
+  ALTA
+  CRITICA
+}
+
+model Company {
+  id         String     @id @default(cuid())
+  name       String
+  plan       String?
+  users      User[]
+  tickets    Ticket[]
+  categories Category[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model User {
+  id               String          @id @default(cuid())
+  name             String
+  email            String          @unique
+  passwordHash     String
+  role             UserRole
+  companyId        String
+  company          Company         @relation(fields: [companyId], references: [id])
+  requestedTickets Ticket[]        @relation("TicketRequester")
+  assignedTickets  Ticket[]        @relation("TicketAssignee")
+  messages         TicketMessage[]
+  sessions         Session[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, name])
+}
+
+model Ticket {
+  id           String          @id @default(cuid())
+  ticketNumber String          @unique
+  title        String
+  description  String
+  companyId    String
+  requesterId  String
+  assignedToId String?
+  categoryId   String?
+  status       TicketStatus    @default(ABERTO)
+  priority     TicketPriority  @default(MEDIA)
+  company      Company         @relation(fields: [companyId], references: [id])
+  requester    User            @relation("TicketRequester", fields: [requesterId], references: [id])
+  assignedTo   User?           @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  category     Category?       @relation(fields: [categoryId], references: [id])
+  messages     TicketMessage[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model TicketMessage {
+  id         String   @id @default(cuid())
+  ticketId   String
+  senderId   String
+  message    String
+  isInternal Boolean  @default(false)
+  ticket     Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender     User     @relation(fields: [senderId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

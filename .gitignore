@@ -1,0 +1,17 @@
+node_modules
+.next
+apps/web/.next
+dist
+build
+.turbo
+.dist
+.env
+.env.local
+coverage
+*.log
+dev.db
+prisma/dev.db
+prisma/dev.db.bak.*
+prisma/schema 2.prisma
+yarn.lock
+pnpm-lock.yaml
