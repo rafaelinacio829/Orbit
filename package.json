@@ -11,6 +11,8 @@
     "dev:api": "npm --workspace @orbit/api run dev",
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspaces",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js"

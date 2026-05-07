@@ -43,6 +43,34 @@ packages/
 prisma/
 ```
 
+## Local database
+
+The project is configured for PostgreSQL with Prisma.
+
+1. Copy `.env.example` to `.env`
+2. Start PostgreSQL locally:
+
+```bash
+npm run db:up
+```
+
+3. Sync the schema:
+
+```bash
+npm run db:push
+```
+
+4. Seed demo data:
+
+```bash
+npm run db:seed
+```
+
+Demo login:
+
+- `rafa@orbitdesk.dev`
+- `orbit123`
+
 ## Next steps
 
 1. Initialize the workspace dependencies.

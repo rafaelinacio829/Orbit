@@ -10,8 +10,9 @@ build
 coverage
 *.log
 dev.db
-prisma/dev.db
-prisma/dev.db.bak.*
+*.db
+*.db-journal
+*.db.bak.*
 prisma/schema 2.prisma
 yarn.lock
 pnpm-lock.yaml
